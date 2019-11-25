@@ -24,7 +24,7 @@ fn main() {
             let path = Path::new(x);
             let result = main1(path);
             match result {
-                Ok(_) => println!("Sucess."),
+                Ok(_) => println!("Finished {}", x),
                 Err(e) => {
                     println!("Error on {}: {}", x, e);
                 }
