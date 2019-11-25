@@ -156,12 +156,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "nixpkgs-fmt"
-version = "0.5.0"
-source = "git+https://github.com/nix-community/nixpkgs-fmt?tag=v0.5.0#5579e03c30c43970c996ab016c70d4824f838fa3"
+version = "0.6.1"
 dependencies = [
  "clap 2.33.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "crossbeam-channel 0.3.9 (registry+https://github.com/rust-lang/crates.io-index)",
  "ignore 0.4.10 (registry+https://github.com/rust-lang/crates.io-index)",
- "rnix 0.7.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rnix 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "rowan 0.6.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde_json 1.0.40 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
@@ -192,7 +192,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "rnix"
-version = "0.7.0"
+version = "0.7.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "cbitset 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -289,7 +289,8 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 name = "update-fetch"
 version = "0.1.0"
 dependencies = [
- "nixpkgs-fmt 0.5.0 (git+https://github.com/nix-community/nixpkgs-fmt?tag=v0.5.0)",
+ "nixpkgs-fmt 0.6.1",
+ "rnix 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -355,11 +356,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum libc 0.2.62 (registry+https://github.com/rust-lang/crates.io-index)" = "34fcd2c08d2f832f376f4173a231990fa5aef4e99fb569867318a227ef4c06ba"
 "checksum log 0.4.8 (registry+https://github.com/rust-lang/crates.io-index)" = "14b6052be84e6b71ab17edffc2eeabf5c2c3ae1fdb464aae35ac50c67a44e1f7"
 "checksum memchr 2.2.1 (registry+https://github.com/rust-lang/crates.io-index)" = "88579771288728879b57485cc7d6b07d648c9f0141eb955f8ab7f9d45394468e"
-"checksum nixpkgs-fmt 0.5.0 (git+https://github.com/nix-community/nixpkgs-fmt?tag=v0.5.0)" = "<none>"
 "checksum num-traits 0.2.8 (registry+https://github.com/rust-lang/crates.io-index)" = "6ba9a427cfca2be13aa6f6403b0b7e7368fe982bfa16fccc450ce74c46cd9b32"
 "checksum regex 1.3.1 (registry+https://github.com/rust-lang/crates.io-index)" = "dc220bd33bdce8f093101afe22a037b8eb0e5af33592e6a9caafff0d4cb81cbd"
 "checksum regex-syntax 0.6.12 (registry+https://github.com/rust-lang/crates.io-index)" = "11a7e20d1cce64ef2fed88b66d347f88bd9babb82845b2b858f3edbf59a4f716"
-"checksum rnix 0.7.0 (registry+https://github.com/rust-lang/crates.io-index)" = "aa400e0d98ba60bf7d15ff4e16d9e6c1d14e75c0038c1bc346a50bfa814f5a66"
+"checksum rnix 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)" = "ab1d6816b24e552bd47a4bed172dff60c67ca7a0b073211e6d3799298d30002c"
 "checksum rowan 0.6.2 (registry+https://github.com/rust-lang/crates.io-index)" = "dc2b79612dedc9004083a61448eb669d336d56690aab29fbd7249e8c8ab41d8c"
 "checksum rustc-hash 1.0.1 (registry+https://github.com/rust-lang/crates.io-index)" = "7540fc8b0c49f096ee9c961cda096467dce8084bec6bdca2fc83895fd9b28cb8"
 "checksum ryu 1.0.0 (registry+https://github.com/rust-lang/crates.io-index)" = "c92464b447c0ee8c4fb3824ecc8383b81717b9f1e74ba2e72540aef7b9f82997"

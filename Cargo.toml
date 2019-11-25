@@ -7,4 +7,5 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-nixpkgs-fmt = { git = "https://github.com/nix-community/nixpkgs-fmt", tag = "v0.5.0" }
+nixpkgs-fmt = { path = "../nixpkgs-fmt" }
+rnix = "0.7.1"
