@@ -10,8 +10,8 @@ pkgs.stdenv.mkDerivation rec {
   name = "nixpkgs-fmt";
 
   src = pkgs.fetchurl {
-    url = "https://github.com/justinwoo/update-fetch/releases/download/2019-11-26/update-fetch";
-    sha256 = "175j9z7abifkzfjnv5rxa2r96jg78xk4g897g34y6cdm0j03i08m";
+    url = "https://github.com/justinwoo/update-fetch/releases/download/2019-11-27/update-fetch";
+    sha256 = "1mjn7892myc0iihxvmn3hi1xk72jilq4sjm86zari5d7i5nwlifv";
   };
 
   buildInputs = [ pkgs.makeWrapper ];
