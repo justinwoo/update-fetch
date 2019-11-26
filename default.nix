@@ -5,7 +5,8 @@ let
 
   binDeps = [ pkgs.nix-prefetch-git ];
 
-in pkgs.stdenv.mkDerivation rec {
+in
+pkgs.stdenv.mkDerivation rec {
   name = "nixpkgs-fmt";
 
   src = pkgs.fetchurl {
