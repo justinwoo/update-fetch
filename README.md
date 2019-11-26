@@ -21,7 +21,7 @@ Get the latest rev and sha256 by running `nix-prefetch-git https://github.com/ju
 
 ## Usage
 
-```
+```bash
 $ update-fetch
 Need arguments for what in_files to process.
 Usage Examples:
@@ -35,8 +35,24 @@ Usage Examples:
 
 ## Example
 
-```
-$ update-fetch spago2nix.nix
-Fetched rev and sha256 for justinwoo/spago2nix
-Finished spago2nix.nix
+```diff
+$ update-fetch default.nix
+Fetched rev and sha256 for justinwoo/easy-purescript-nix
+Finished default.nix
+
+$ git diff
+diff --git a/default.nix b/default.nix
+--- a/default.nix
++++ b/default.nix
+@@ -21,8 +21,8 @@ in
+       pkgs.fetchFromGitHub {
+         owner = "justinwoo";
+         repo = "easy-purescript-nix";
+-        rev = "cc7196bff3fdb5957aabfe22c3fa88267047fe88";
+-        sha256 = "1xfl7rnmmcm8qdlsfn3xjv91my6lirs5ysy01bmyblsl10y2z9iw";
++        rev = "927403abd55dfc82824019cc03efbc28047b3d46";
++        sha256 = "1lj1jrrxpzn2lravmam7xbzb2d3bg40yacmvh4m7gc3rmvnc9bh8";
+       }
+     ) {
+       inherit pkgs;
 ```
