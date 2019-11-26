@@ -77,11 +77,11 @@ fn format(root: &SyntaxNode) -> FmtDiff {
         element
             .as_node()
             .and_then(|x| get_node_attr_set(&x))
-            .map(|node| {
+            .map(|node: &SyntaxNode| {
                 let set = attr_set_binds_to_hashmap(&node);
-                if let Some(replacement) = handle_fetch_tarball(&set)
-                    .or_else(|| handle_fetch_url(&set))
-                    .or_else(|| handle_fetch_github(&set))
+                if let Some(replacement) = handle_fetch_tarball(&node, &set)
+                    .or_else(|| handle_fetch_url(&node, &set))
+                    .or_else(|| handle_fetch_github(&node, &set))
                 {
                     add_replacement(node, &replacement)
                 }
@@ -94,11 +94,17 @@ fn format(root: &SyntaxNode) -> FmtDiff {
 // replacement string
 type Replacement = String;
 
-// based on heuristic: if it has a name, it's probably used for fetchTarball.
-fn handle_fetch_tarball(attrs: &AttrHashMap) -> Option<Replacement> {
+// if there's a fetchTarball call, get a new sha for it.
+fn handle_fetch_tarball(node: &SyntaxNode, attrs: &AttrHashMap) -> Option<Replacement> {
+    let prev_node_string: String = node.prev_sibling()?.text().to_string();
+    let prev_contains_fetch_tarball = prev_node_string.contains("fetchTarball");
+
+    if !prev_contains_fetch_tarball {
+        return None
+    }
+
     let url = attrs.get("url")?;
     let _sha256 = attrs.get("sha256")?;
-    let name = attrs.get("name")?;
 
     let prefetch_attempt = process::Command::new("nix-prefetch-url")
         .arg(url.replace("\"", ""))
@@ -112,11 +118,10 @@ fn handle_fetch_tarball(attrs: &AttrHashMap) -> Option<Replacement> {
         println!("Fetched sha256 for {}", url);
         Some(format!(
             r#"{{
-                name = {};
                 url = {};
                 sha256 = "{}";
             }}"#,
-            name, url, new_sha256
+            url, new_sha256
         ))
     } else {
         println!("Failed to prefetch url: {}", url);
@@ -129,7 +134,14 @@ fn remove_quotes(string: &String) -> String {
 }
 
 // if there's a fetchurl call, get a new sha for it.
-fn handle_fetch_url(attrs: &AttrHashMap) -> Option<Replacement> {
+fn handle_fetch_url(node: &SyntaxNode, attrs: &AttrHashMap) -> Option<Replacement> {
+    let prev_node_string: String = node.prev_sibling()?.text().to_string();
+    let prev_contains_fetch_url = prev_node_string.contains("fetchurl");
+
+    if !prev_contains_fetch_url {
+        return None
+    }
+
     let url = attrs.get("url")?;
     let _sha256 = attrs.get("sha256")?;
 
@@ -156,7 +168,14 @@ fn handle_fetch_url(attrs: &AttrHashMap) -> Option<Replacement> {
 }
 
 // if there's a fetchFromGitHub call, get the newest reversion and sha for it.
-fn handle_fetch_github(attrs: &AttrHashMap) -> Option<Replacement> {
+fn handle_fetch_github(node: &SyntaxNode, attrs: &AttrHashMap) -> Option<Replacement> {
+    let prev_node_string: String = node.prev_sibling()?.text().to_string();
+    let prev_contains_fetch_github = prev_node_string.contains("fetchFromGitHub");
+
+    if !prev_contains_fetch_github {
+        return None
+    }
+
     let owner = attrs.get("owner")?;
     let repo = attrs.get("repo")?;
     let _rev = attrs.get("rev")?;
