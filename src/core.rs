@@ -27,6 +27,7 @@ pub fn prepare_replacement(method: &ReplacementMethod) -> Option<ReplacementStri
         ReplacementMethod::FetchFromGitHub { owner, repo } => {
             prepare_github_replacement(owner, repo)
         }
+        ReplacementMethod::Fetchgit { url } => prepare_git_replacement(url),
     }
 }
 
@@ -49,7 +50,7 @@ fn handle_fetch_tarball(node: &SyntaxNode, attrs: &AttrHashMap) -> Option<Replac
 
 fn prepare_tarball_replacement(url: &String) -> Option<ReplacementString> {
     let prefetch_attempt = process::Command::new("nix-prefetch-url")
-        .arg(url.replace("\"", ""))
+        .arg(remove_quotes(url))
         .arg("--unpack")
         .output()
         .expect("Error: Failed to launch nix-prefetch-url.");
@@ -168,9 +169,9 @@ fn prepare_github_replacement(owner: &String, repo: &String) -> Option<Replaceme
 // if there's a fetchgit call, get the newest reversion and sha for it.
 fn handle_fetchgit(node: &SyntaxNode, attrs: &AttrHashMap) -> Option<ReplacementMethod> {
     let prev_node_string: String = node.prev_sibling()?.text().to_string();
-    let prev_contains_fetch_github = prev_node_string.contains("fetchgit");
+    let prev_contains_fetchgit = prev_node_string.contains("fetchgit");
 
-    if !prev_contains_fetch_github {
+    if !prev_contains_fetchgit {
         return None;
     }
 
@@ -185,7 +186,7 @@ fn handle_fetchgit(node: &SyntaxNode, attrs: &AttrHashMap) -> Option<Replacement
 
 fn prepare_git_replacement(url: &String) -> Option<ReplacementString> {
     let prefetch_attempt = process::Command::new("nix-prefetch-git")
-        .arg(format!("{}", url))
+        .arg(format!("{}", remove_quotes(url)))
         .output()
         .expect("Error: Failed to launch nix-prefetch-git.");
 
