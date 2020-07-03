@@ -25,7 +25,7 @@ pkgs.stdenv.mkDerivation rec {
     TARGET=$out/bin/update-fetch
 
     cp $src $TARGET
-    chmod +x $TARGET
+    chmod +wx $TARGET
 
     patchelf $TARGET \
       --interpreter ${dynamic-linker} \
