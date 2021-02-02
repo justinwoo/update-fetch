@@ -1,4 +1,4 @@
-{ pkgs ? import <nixpkgs> {} }:
+{ pkgs ? import <nixpkgs> { } }:
 
 let
   dynamic-linker = pkgs.stdenv.cc.bintools.dynamicLinker;
@@ -10,8 +10,8 @@ pkgs.stdenv.mkDerivation rec {
   name = "nixpkgs-fmt";
 
   src = pkgs.fetchurl {
-    url = "https://github.com/justinwoo/update-fetch/releases/download/2019-11-28/update-fetch";
-    sha256 = "1ymi7mfczyxj38xp0p85452k17pwfs1ky4mqhbk1qc14fmiakdvs";
+    url = "https://github.com/justinwoo/update-fetch/releases/download/2021-02-03/update-fetch";
+    sha256 = "0cp2rm1iyvpgriqwd5m851d7xir1h5d7m0gh8gsfxjgahn885xjv";
   };
 
   buildInputs = [ pkgs.makeWrapper ];
