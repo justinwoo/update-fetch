@@ -5,7 +5,8 @@ use nixpkgs_fmt::{
     engine::fmt_model::FmtModel, tree_utils::walk_non_whitespace, AtomEdit, FmtDiff,
 };
 use rayon::prelude::*;
-use rnix::{SyntaxNode, TextRange};
+use rnix::SyntaxNode;
+use rowan::TextRange;
 
 pub struct Replacement {
     pub delete: TextRange,
@@ -25,7 +26,9 @@ pub fn format(root: &SyntaxNode) -> FmtDiff {
                     let set = node::attr_set_binds_to_hashmap(&node);
                     core::handle_fetch(&node, &set).map(|method| {
                         let range = node.text_range();
-                        let delete = TextRange::offset_len(range.start(), range.len());
+                        let start = range.start();
+                        let end = start + range.len();
+                        let delete = TextRange::new(start, end);
                         Replacement { delete, method }
                     })
                 })
