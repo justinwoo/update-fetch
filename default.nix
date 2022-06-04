@@ -9,9 +9,9 @@ in
 pkgs.stdenv.mkDerivation rec {
   name = "nixpkgs-fmt";
 
-  src = pkgs.fetchurl {
-    url = "https://github.com/justinwoo/update-fetch/releases/download/2021-02-03/update-fetch";
-    sha256 = "0cp2rm1iyvpgriqwd5m851d7xir1h5d7m0gh8gsfxjgahn885xjv";
+  src = builtins.fetchTarball {
+    url = "https://justin.gateway.scarf.sh/update-fetch/1.0.0.tgz";
+    sha256 = "04b8d3pxkmd6cxclc9p903l110xz59dqgblfqw1f6jwsd641nw6n";
   };
 
   buildInputs = [ pkgs.makeWrapper ];
@@ -24,7 +24,7 @@ pkgs.stdenv.mkDerivation rec {
     mkdir -p $out/bin
     TARGET=$out/bin/update-fetch
 
-    cp $src $TARGET
+    cp $src/update-fetch $TARGET
     chmod +wx $TARGET
 
     patchelf $TARGET \
