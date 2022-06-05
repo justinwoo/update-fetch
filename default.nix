@@ -7,7 +7,7 @@ let
 
 in
 pkgs.stdenv.mkDerivation rec {
-  name = "nixpkgs-fmt";
+  name = "update-fetch";
 
   src = builtins.fetchTarball {
     url = "https://justin.gateway.scarf.sh/update-fetch/1.1.0.tgz";
