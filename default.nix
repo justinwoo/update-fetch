@@ -14,7 +14,7 @@ pkgs.stdenv.mkDerivation rec {
     sha256 = "04b8d3pxkmd6cxclc9p903l110xz59dqgblfqw1f6jwsd641nw6n";
   };
 
-  buildInputs = [ pkgs.makeWrapper ];
+  buildInputs = [ pkgs.makeWrapper pkgs.glibc ];
 
   dontStrip = true;
 
