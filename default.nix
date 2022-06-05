@@ -10,8 +10,8 @@ pkgs.stdenv.mkDerivation rec {
   name = "nixpkgs-fmt";
 
   src = builtins.fetchTarball {
-    url = "https://justin.gateway.scarf.sh/update-fetch/1.0.0.tgz";
-    sha256 = "04b8d3pxkmd6cxclc9p903l110xz59dqgblfqw1f6jwsd641nw6n";
+    url = "https://justin.gateway.scarf.sh/update-fetch/1.1.0.tgz";
+    sha256 = "1qjsaxcld5czp4fv63hl3lrzsr5lvnv89gzh638wixil3a6dp4b5";
   };
 
   buildInputs = [ pkgs.makeWrapper pkgs.glibc ];
