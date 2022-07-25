@@ -6,6 +6,7 @@ use crate::node::AttrHashMap;
 
 pub enum ReplacementMethod {
     FetchTarball { url: String },
+    FetchZip { url: String },
     FetchUrl { url: String },
     FetchFromGitHub { owner: String, repo: String },
     Fetchgit { url: String },
@@ -15,6 +16,7 @@ pub type ReplacementString = String;
 
 pub fn handle_fetch(node: &SyntaxNode, attrs: &AttrHashMap) -> Option<ReplacementMethod> {
     handle_fetch_tarball(node, attrs)
+        .or_else(|| handle_fetch_zip(node, attrs))
         .or_else(|| handle_fetch_url(node, attrs))
         .or_else(|| handle_fetch_github(node, attrs))
         .or_else(|| handle_fetchgit(node, attrs))
@@ -23,6 +25,7 @@ pub fn handle_fetch(node: &SyntaxNode, attrs: &AttrHashMap) -> Option<Replacemen
 pub fn prepare_replacement(method: &ReplacementMethod) -> Option<ReplacementString> {
     match method {
         ReplacementMethod::FetchTarball { url } => prepare_tarball_replacement(url),
+        ReplacementMethod::FetchZip { url } => prepare_zip_replacement(url),
         ReplacementMethod::FetchUrl { url } => prepare_url_replacement(url),
         ReplacementMethod::FetchFromGitHub { owner, repo } => {
             prepare_github_replacement(owner, repo)
@@ -49,6 +52,47 @@ fn handle_fetch_tarball(node: &SyntaxNode, attrs: &AttrHashMap) -> Option<Replac
 }
 
 fn prepare_tarball_replacement(url: &String) -> Option<ReplacementString> {
+    let prefetch_attempt = process::Command::new("nix-prefetch-url")
+        .arg(remove_quotes(url))
+        .arg("--unpack")
+        .output()
+        .expect("Error: Failed to launch nix-prefetch-url.");
+
+    if prefetch_attempt.status.success() {
+        let new_sha256_str = String::from_utf8(prefetch_attempt.stdout).unwrap();
+        let new_sha256 = new_sha256_str.trim();
+        println!("Fetched sha256 for {}", url);
+        Some(format!(
+            r#"{{
+                url = {};
+                sha256 = "{}";
+            }}"#,
+            url, new_sha256
+        ))
+    } else {
+        println!("Failed to prefetch url: {}", url);
+        None
+    }
+}
+
+// if there's a fetchZip call, get a new sha for it.
+fn handle_fetch_zip(node: &SyntaxNode, attrs: &AttrHashMap) -> Option<ReplacementMethod> {
+    let prev_node_string: String = node.prev_sibling()?.text().to_string();
+    let prev_contains_fetch_zip = prev_node_string.contains("fetchzip");
+
+    if !prev_contains_fetch_zip {
+        return None;
+    }
+
+    let url = attrs.get("url")?;
+    let _sha256 = attrs.get("sha256")?;
+
+    Some(ReplacementMethod::FetchZip {
+        url: url.to_owned(),
+    })
+}
+
+fn prepare_zip_replacement(url: &String) -> Option<ReplacementString> {
     let prefetch_attempt = process::Command::new("nix-prefetch-url")
         .arg(remove_quotes(url))
         .arg("--unpack")
