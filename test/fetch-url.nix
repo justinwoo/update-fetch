@@ -1,4 +1,4 @@
-{ pkgs ? import <nixpkgs> {} }:
+{ pkgs ? import <nixpkgs> { } }:
 
 pkgs.fetchurl {
   url = "https://github.com/justinwoo/empty-repo/archive/108b9ec239caf7a9e39de456d1a80a9c5f4c5afe.tar.gz";

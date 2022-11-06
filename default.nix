@@ -3,7 +3,16 @@
 let
   dynamic-linker = pkgs.stdenv.cc.bintools.dynamicLinker;
 
-  binDeps = [ pkgs.nix-prefetch-git ];
+  binDeps = [
+    pkgs.nix-prefetch-git
+  ];
+
+  libPath = pkgs.lib.makeLibraryPath [ pkgs.glibc ];
+
+  patchelf =
+    if pkgs.stdenv.isDarwin
+    then ""
+    else "patchelf $TARGET --interpreter ${dynamic-linker} --set-rpath ${libPath}";
 
 in
 pkgs.stdenv.mkDerivation rec {
@@ -14,11 +23,9 @@ pkgs.stdenv.mkDerivation rec {
     sha256 = "1qjsaxcld5czp4fv63hl3lrzsr5lvnv89gzh638wixil3a6dp4b5";
   };
 
-  buildInputs = [ pkgs.makeWrapper pkgs.glibc ];
+  buildInputs = [ pkgs.makeWrapper ];
 
   dontStrip = true;
-
-  libPath = pkgs.lib.makeLibraryPath [ pkgs.glibc ];
 
   unpackPhase = ''
     mkdir -p $out/bin
@@ -27,9 +34,7 @@ pkgs.stdenv.mkDerivation rec {
     cp $src/update-fetch $TARGET
     chmod +wx $TARGET
 
-    patchelf $TARGET \
-      --interpreter ${dynamic-linker} \
-      --set-rpath ${libPath}
+    ${patchelf}
 
     wrapProgram $TARGET \
       --prefix PATH : ${pkgs.lib.makeBinPath binDeps}
