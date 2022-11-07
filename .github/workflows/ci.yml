@@ -1,0 +1,45 @@
+name: Build with Rust toochain
+
+on:
+  push:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+
+    steps:
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          default: true
+          override: true
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Build
+        run: |
+          cargo build --all --release
+          strip target/release/update-fetch
+          mkdir -p output
+          mv target/release/update-fetch output
+
+      - uses: nixbuild/nix-quick-install-action@v19
+
+      - name: Test
+        run: |
+          nix-channel --add https://nixos.org/channels/nixpkgs-unstable nixpkgs
+          nix-channel --update
+          nix-build test
+          ./result/bin/update-fetch test/*
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ matrix.os }}-binary
+          path: ./output/update-fetch
