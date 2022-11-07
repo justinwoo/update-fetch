@@ -18,10 +18,19 @@ in
 pkgs.stdenv.mkDerivation rec {
   name = "update-fetch";
 
-  src = builtins.fetchTarball {
-    url = "https://justin.gateway.scarf.sh/update-fetch/1.1.0.tgz";
-    sha256 = "1qjsaxcld5czp4fv63hl3lrzsr5lvnv89gzh638wixil3a6dp4b5";
-  };
+  src =
+    if pkgs.stdenv.isDarwin
+    then
+      pkgs.fetchzip
+        {
+          url = "https://justin.gateway.scarf.sh/update-fetch/binaries/2022-11-07/macos.zip";
+          sha256 = "BBE3vfP2XRHIEVt9fG87inI3Tca5l/fp9ubIOnzA4iA=";
+        }
+    else
+      pkgs.fetchzip {
+        url = "https://justin.gateway.scarf.sh/update-fetch/binaries/2022-11-07/ubuntu.zip";
+        sha256 = "6qSRe63F3yaIgM48uwHg2NTsypzs6yxsvc+9k8Rh5I4=";
+      };
 
   buildInputs = [ pkgs.makeWrapper ];
 
